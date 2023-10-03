@@ -64,7 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -93,8 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundDecoration: BoxDecoration(color: Colors.transparent),
             heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
           ),
-          Container(
-            color: Colors.red.withOpacity(0.2),
+          BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+            child: Container(
+              color: Colors.red.withOpacity(0.2),
+            ),
           ),
           Positioned(
             left: 10,  // Adjust this value for desired left offset
