@@ -12,7 +12,7 @@ class _SettingsWidgetState extends State<SettingsWidget> with SingleTickerProvid
   double _sliderValue = 0.5;
 
   late AnimationController _controller;
-  late Animation<double> _opacityAnimation;
+  late Animation<double> _settingsOpacity;
   late Animation<double> _blurAnimation;
 
   @override
@@ -23,8 +23,8 @@ class _SettingsWidgetState extends State<SettingsWidget> with SingleTickerProvid
       vsync: this,
     );
 
-    _opacityAnimation = Tween<double>(begin: 0.2, end: 0.25).animate(_controller);
-    _blurAnimation = Tween<double>(begin: 3.0, end: 4.0).animate(_controller);
+    _settingsOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _blurAnimation = Tween<double>(begin: 3.0, end: 4.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
   }
@@ -48,61 +48,64 @@ class _SettingsWidgetState extends State<SettingsWidget> with SingleTickerProvid
                 sigmaY: _blurAnimation.value,
               ),
               child: Container(
-                color: Colors.red.withOpacity(_opacityAnimation.value),
+                color: Colors.red.withOpacity(0.25),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Test Switch 1', style: TextStyle(color: Colors.white)),
-                      Switch(
-                        value: _switchValue1,
-                        activeColor: Colors.red,
-                        onChanged: (value) {
-                          setState(() {
-                            _switchValue1 = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Test Switch 2', style: TextStyle(color: Colors.white)),
-                      Switch(
-                        value: _switchValue2,
-                        activeColor: Colors.red,
-                        onChanged: (value) {
-                          setState(() {
-                            _switchValue2 = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Test Slider', style: TextStyle(color: Colors.white)),
-                      Expanded(
-                        child: Slider(
-                          value: _sliderValue,
+            FadeTransition(
+              opacity: _settingsOpacity,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Test Switch 1', style: TextStyle(color: Colors.white)),
+                        Switch(
+                          value: _switchValue1,
                           activeColor: Colors.red,
                           onChanged: (value) {
                             setState(() {
-                              _sliderValue = value;
+                              _switchValue1 = value;
                             });
                           },
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Test Switch 2', style: TextStyle(color: Colors.white)),
+                        Switch(
+                          value: _switchValue2,
+                          activeColor: Colors.red,
+                          onChanged: (value) {
+                            setState(() {
+                              _switchValue2 = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text('Test Slider', style: TextStyle(color: Colors.white)),
+                        Expanded(
+                          child: Slider(
+                            value: _sliderValue,
+                            activeColor: Colors.red,
+                            onChanged: (value) {
+                              setState(() {
+                                _sliderValue = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
