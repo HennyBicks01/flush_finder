@@ -31,25 +31,26 @@ class _MyHomePageState extends State<MyHomePage> {
   double _xOffset = 0.0;
   double _yOffset = 0.0;
 
-  final double imageWidth = 1053.0;  // Original image width
-  final double imageHeight = 951.0;  // Original image height
-
   void _onPanUpdate(DragUpdateDetails details) {
     setState(() {
       _xOffset += details.delta.dx;
       _yOffset += details.delta.dy;
 
       var screenSize = MediaQuery.of(context).size;
-      var scaledImageWidth = imageWidth * _scale;
-      var scaledImageHeight = imageHeight * _scale;
+      var scaledImageWidth = screenSize.width * _scale;
+      var scaledImageHeight = screenSize.height * _scale;
 
-      // Calculate the boundary offsets
-      double maxXOffset = (scaledImageWidth - screenSize.width) / 2;
-      double maxYOffset = (scaledImageHeight - screenSize.height) / 2;
+      // Calculate overflow for each axis
+      double overflowX = scaledImageWidth - screenSize.width;
+      double overflowY = scaledImageHeight - screenSize.height;
 
-      // Clamp the offsets to ensure the image boundaries aren't crossed
-      _xOffset = _xOffset.clamp(-maxXOffset, maxXOffset);
-      _yOffset = _yOffset.clamp(-maxYOffset, maxYOffset);
+      // If the image is smaller than the screen in that dimension, center it
+      if (overflowX < 0) _xOffset = 0;
+      if (overflowY < 0) _yOffset = 0;
+
+      // If there's an overflow, clamp the offsets to half the overflow
+      _xOffset = _xOffset.clamp(-overflowX / 2, overflowX / 2);
+      _yOffset = _yOffset.clamp(-overflowY / 2, overflowY / 2);
     });
   }
 
