@@ -1,55 +1,72 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 
-class SettingsPanel extends StatefulWidget {
-  final bool showSettings;
-  final VoidCallback toggleSettings;
-
-  const SettingsPanel({super.key, required this.showSettings, required this.toggleSettings});
-
+class SettingsPage extends StatefulWidget {
   @override
-  SettingsPanelState createState() => SettingsPanelState();
+  _SettingsPageState createState() => _SettingsPageState();
 }
 
-class SettingsPanelState extends State<SettingsPanel> {
+class _SettingsPageState extends State<SettingsPage> {
+  bool _switchValue1 = false;
+  bool _switchValue2 = false;
+  double _sliderValue = 0.5;
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Increase blur when settings are shown
-        BackdropFilter(
-          filter: ui.ImageFilter.blur(
-            sigmaX: widget.showSettings ? 10.0 : 5.0,
-            sigmaY: widget.showSettings ? 10.0 : 5.0,
-          ),
-          child: Container(
-            color: Colors.red.withOpacity(0.5),
-          ),
-        ),
-
-        // Settings Panel
-        if (widget.showSettings)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 200,  // Adjust height based on your needs
-              color: Colors.white,
-              child: const Center(
-                child: Text('Settings Panel'),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Settings'),
+        backgroundColor: Colors.red,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Test Switch 1'),
+                Switch(
+                  value: _switchValue1,
+                  onChanged: (value) {
+                    setState(() {
+                      _switchValue1 = value;
+                    });
+                  },
+                ),
+              ],
             ),
-          ),
-
-        // Settings Button
-        Positioned(
-          right: 10,
-          top: 50,
-          child: IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
-            onPressed: widget.toggleSettings,
-          ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Test Switch 2'),
+                Switch(
+                  value: _switchValue2,
+                  onChanged: (value) {
+                    setState(() {
+                      _switchValue2 = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text('Test Slider'),
+                Expanded(
+                  child: Slider(
+                    value: _sliderValue,
+                    onChanged: (value) {
+                      setState(() {
+                        _sliderValue = value;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

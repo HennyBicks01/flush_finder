@@ -38,6 +38,14 @@ class _MyHomePageState extends State<MyHomePage> {
   double? _imageHeight;
   ui.Image? _image;  // To hold the raw image data
 
+  bool _showSettings = false;
+
+  void _toggleSettings() {
+    setState(() {
+      _showSettings = !_showSettings;
+    });
+  }
+
   Future<void> _fetchImageDimensions() async {
     final Image image = Image.asset('assets/uc_campus_map.png');
     final Completer<ImageInfo> completer = Completer<ImageInfo>();
@@ -111,24 +119,23 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Positioned(
-            right: 10,  // Adjust this value for desired right offset
-            top: 50,   // Adjust this value to lower or raise the button
+            right: 10,
+            top: 50,
             child: IconButton(
               icon: const Icon(Icons.settings, color: Colors.white),
               onPressed: () {
-                SettingsPanel(
-                  showSettings: _showSettings,
-                  toggleSettings: _toggleSettingsPanel,
-                );
-              },
-            ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                    );
+                  },
+                ),
+              ),
+            ]
           ),
-        ],
-      ),
-    );
-  }
-}
-
+        );
+      }
+    }
 class FilteredImagePainter extends CustomPainter {
   final ui.Image image;
   final double scale;
