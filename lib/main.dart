@@ -78,18 +78,45 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-      body: PhotoView.customChild(
-        initialScale: _minScale!,  // Set initial scale to _minScale
-        basePosition: Alignment.topCenter,  // Ensure image starts at the top
-        childSize: Size(_imageWidth!, _imageHeight!),
-        child: CustomPaint(
-          painter: FilteredImagePainter(_image!, _scale),
-          size: Size(_imageWidth!, _imageHeight!),
-        ),
-        minScale: _minScale!,
-        maxScale: 4.0,
-        backgroundDecoration: BoxDecoration(color: Colors.transparent),
-        heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
+      body: Stack(
+        children: [
+          PhotoView.customChild(
+            initialScale: _minScale!,
+            basePosition: Alignment.topCenter,
+            childSize: Size(_imageWidth!, _imageHeight!),
+            child: CustomPaint(
+              painter: FilteredImagePainter(_image!, _scale),
+              size: Size(_imageWidth!, _imageHeight!),
+            ),
+            minScale: _minScale!,
+            maxScale: 4.0,
+            backgroundDecoration: BoxDecoration(color: Colors.transparent),
+            heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
+          ),
+          Container(
+            color: Colors.red.withOpacity(0.2),
+          ),
+          Positioned(
+            left: 10,  // Adjust this value for desired left offset
+            top: 50,   // Adjust this value to lower or raise the button
+            child: IconButton(
+              icon: Icon(Icons.menu, color: Colors.white),
+              onPressed: () {
+                // Handle menu button press
+              },
+            ),
+          ),
+          Positioned(
+            right: 10,  // Adjust this value for desired right offset
+            top: 50,   // Adjust this value to lower or raise the button
+            child: IconButton(
+              icon: Icon(Icons.settings, color: Colors.white),
+              onPressed: () {
+                // Handle settings button press
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
