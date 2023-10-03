@@ -19,13 +19,13 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Align(
       alignment: Alignment.center,
       child: Padding(
-        padding: EdgeInsets.only(top: 100.0),
+        padding: EdgeInsets.symmetric(horizontal: 26.0, vertical: 100.0),
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Test Switch 1'),
+                Text('Test Switch 1', style: TextStyle(color: Colors.white, fontSize: 20)),
                 Switch(
                   value: _switchValue1,
                   onChanged: (value) {
@@ -33,13 +33,15 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       _switchValue1 = value;
                     });
                   },
+                  activeColor: Colors.red,
+                  inactiveThumbColor: Colors.black,
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Test Switch 2'),
+                Text('Test Switch 2', style: TextStyle(color: Colors.white, fontSize: 20)),
                 Switch(
                   value: _switchValue2,
                   onChanged: (value) {
@@ -47,12 +49,14 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       _switchValue2 = value;
                     });
                   },
+                  activeColor: Colors.red,
+                  inactiveThumbColor: Colors.black,
                 ),
               ],
             ),
             Row(
               children: [
-                Text('Test Slider'),
+                Text('Test Slider', style: TextStyle(color: Colors.white, fontSize: 20)),
                 Expanded(
                   child: Slider(
                     value: _sliderValue,
@@ -61,11 +65,13 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                         _sliderValue = value;
                       });
                     },
+                    activeColor: Colors.red,
+                    inactiveColor: Colors.black,
                   ),
                 ),
               ],
             ),
-          ], // This was the problematic comma
+          ],
         ),
       ),
     );
