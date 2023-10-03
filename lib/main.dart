@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -27,63 +28,66 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _scale = 2.5;
-  double _xOffset = 0.0;
-  double _yOffset = 0.0;
+  double _scale = 2;
+  double? _minScale; // Minimum scale
+  double? _imageWidth;
+  double? _imageHeight;
 
-  void _onPanUpdate(DragUpdateDetails details) {
+  Future<void> _fetchImageDimensions() async {
+    final Image image = Image.asset('assets/uc_campus_map.png');
+    final Completer<ImageInfo> completer = Completer<ImageInfo>();
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener(
+            (ImageInfo info, bool _) {
+          if (!completer.isCompleted) {
+            completer.complete(info);
+          }
+        },
+      ),
+    );
+    final ImageInfo imageInfo = await completer.future;
+
     setState(() {
-      _xOffset += details.delta.dx;
-      _yOffset += details.delta.dy;
-
-      var screenSize = MediaQuery.of(context).size;
-      var scaledImageWidth = screenSize.width * _scale;
-      var scaledImageHeight = screenSize.height * _scale;
-
-      // Calculate overflow for each axis
-      double overflowX = scaledImageWidth - screenSize.width;
-      double overflowY = scaledImageHeight - screenSize.height;
-
-      // If the image is smaller than the screen in that dimension, center it
-      if (overflowX < 0) _xOffset = 0;
-      if (overflowY < 0) _yOffset = 0;
-
-      // If there's an overflow, clamp the offsets to half the overflow
-      _xOffset = _xOffset.clamp(-overflowX / 2, overflowX / 2);
-      _yOffset = _yOffset.clamp(-overflowY / 2, overflowY / 2);
+      _imageWidth = imageInfo.image.width.toDouble();
+      _imageHeight = imageInfo.image.height.toDouble();
+      _minScale = MediaQuery.of(context).size.height / _imageHeight!; // Calculate minimum scale
+      _scale = _minScale!; // Set the initial scale to the minimum scale
     });
   }
 
   @override
+  void initState() {
+    super.initState();
+    _fetchImageDimensions();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_imageWidth == null || _imageHeight == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
-      body: GestureDetector(
-        onPanUpdate: _onPanUpdate,
-        child: Stack(
-          children: [
-            Transform.translate(
-              offset: Offset(_xOffset, _yOffset),
-              child: Transform.scale(
-                scale: _scale,
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    Colors.grey,
-                    BlendMode.saturation,
-                  ),
-                  child: Image.asset(
-                    'assets/uc_campus_map.png',
-                    fit: BoxFit.cover,
-                  ),
+      body: ListView(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              width: _imageWidth! * _scale,
+              height: _imageHeight! * _scale,
+              child: ColorFiltered(
+                colorFilter: const ColorFilter.mode(
+                  Colors.grey,
+                  BlendMode.saturation,
+                ),
+                child: Image.asset(
+                  'assets/uc_campus_map.png',
+                  fit: BoxFit.fill,
                 ),
               ),
             ),
-            const Positioned(
-              left: 100,
-              top: 150,
-              child: Icon(Icons.location_on, color: Colors.red, size: 40.0),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
