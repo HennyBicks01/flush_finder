@@ -30,15 +30,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _scale = 1.0;
-  double _xOffset = 0.0;
+  double _scale = 2.5; // Increased initial zoom
+  double _xOffset = 0.0; // Adjust these values for initial position
   double _yOffset = 0.0;
 
   void _zoomToMarker() {
     setState(() {
       _scale = 2.0;
-      _xOffset = -100;  // Values adjusted to center the marker
-      _yOffset = -150;  // Values adjusted to center the marker
+      _xOffset = -100;
+      _yOffset = -150;
     });
   }
 
@@ -47,10 +47,15 @@ class _MyHomePageState extends State<MyHomePage> {
       _xOffset += details.delta.dx;
       _yOffset += details.delta.dy;
 
-      // Ensure we don't drag the image outside of the viewport
-      // You might need to adjust these values based on your specific image and marker size
-      _xOffset = _xOffset.clamp(-200.0 * _scale, 200.0 * _scale);
-      _yOffset = _yOffset.clamp(-200.0 * _scale, 200.0 * _scale);
+      var screenSize = MediaQuery.of(context).size;
+
+      // Calculate the boundary offsets
+      double maxXOffset = (screenSize.width / 2) * (_scale - 1);
+      double maxYOffset = (screenSize.height / 2) * (_scale - 1);
+
+      // Clamp the offsets to ensure the image boundaries aren't crossed
+      _xOffset = _xOffset.clamp(-maxXOffset, maxXOffset);
+      _yOffset = _yOffset.clamp(-maxYOffset, maxYOffset);
     });
   }
 
@@ -58,12 +63,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: GestureDetector(
         onDoubleTap: _zoomToMarker,
-        onPanUpdate: _onPanUpdate, // Add this line
+        onPanUpdate: _onPanUpdate,
         child: Stack(
           children: [
             Transform.translate(
@@ -77,8 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             const Positioned(
-              left: 100, // Adjust these values to position the marker
-              top: 150,  // Adjust these values to position the marker
+              left: 100,
+              top: 150,
               child: Icon(Icons.location_on, color: Colors.red, size: 40.0),
             ),
           ],
