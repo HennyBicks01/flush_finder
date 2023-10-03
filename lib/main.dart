@@ -42,6 +42,18 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _onPanUpdate(DragUpdateDetails details) {
+    setState(() {
+      _xOffset += details.delta.dx;
+      _yOffset += details.delta.dy;
+
+      // Ensure we don't drag the image outside of the viewport
+      // You might need to adjust these values based on your specific image and marker size
+      _xOffset = _xOffset.clamp(-200.0 * _scale, 200.0 * _scale);
+      _yOffset = _yOffset.clamp(-200.0 * _scale, 200.0 * _scale);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: GestureDetector(
         onDoubleTap: _zoomToMarker,
+        onPanUpdate: _onPanUpdate, // Add this line
         child: Stack(
           children: [
             Transform.translate(
