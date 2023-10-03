@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsWidget extends StatefulWidget {
+  final VoidCallback toggleSettings;
+
+  const SettingsWidget({required this.toggleSettings, Key? key}) : super(key: key);
+
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  _SettingsWidgetState createState() => _SettingsWidgetState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsWidgetState extends State<SettingsWidget> {
   bool _switchValue1 = false;
   bool _switchValue2 = false;
   double _sliderValue = 0.5;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Settings'),
-        backgroundColor: Colors.red,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.only(top: 100.0),
         child: Column(
           children: [
             Row(
@@ -64,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ],
             ),
-          ],
+          ], // This was the problematic comma
         ),
       ),
     );

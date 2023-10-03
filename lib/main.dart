@@ -108,34 +108,34 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.red.withOpacity(0.2),
             ),
           ),
-          Positioned(
-            left: 10,  // Adjust this value for desired left offset
-            top: 50,   // Adjust this value to lower or raise the button
-            child: IconButton(
-              icon: const Icon(Icons.menu, color: Colors.white),
-              onPressed: () {
-                // Handle menu button press
-              },
+          if (_showSettings)
+            SettingsWidget(toggleSettings: _toggleSettings) // Pass the _toggleSettings function
+          else
+            Positioned(
+              left: 10,  // Adjust this value for desired left offset
+              top: 50,   // Adjust this value to lower or raise the button
+              child: IconButton(
+                icon: const Icon(Icons.menu, color: Colors.white),
+                onPressed: () {
+                  // Handle menu button press
+                },
+              ),
             ),
-          ),
+
           Positioned(
             right: 10,
             top: 50,
             child: IconButton(
               icon: const Icon(Icons.settings, color: Colors.white),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()),
-                    );
-                  },
-                ),
-              ),
-            ]
+              onPressed: _toggleSettings, // Toggle settings without navigation
+            ),
           ),
-        );
-      }
-    }
+        ],
+      ),
+    );
+  }
+}
+
 class FilteredImagePainter extends CustomPainter {
   final ui.Image image;
   final double scale;
