@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'settings.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -114,7 +116,10 @@ class _MyHomePageState extends State<MyHomePage> {
             child: IconButton(
               icon: const Icon(Icons.settings, color: Colors.white),
               onPressed: () {
-                // Handle settings button press
+                SettingsPanel(
+                  showSettings: _showSettings,
+                  toggleSettings: _toggleSettingsPanel,
+                );
               },
             ),
           ),
