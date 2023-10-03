@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   double _scale = 2.5;
   double? _minScale;
   double? _imageWidth;
@@ -39,12 +39,32 @@ class _MyHomePageState extends State<MyHomePage> {
   ui.Image? _image;  // To hold the raw image data
 
   bool _showSettings = false;
+  late AnimationController _animationController;
+  late Animation<double> _blurAnimation;
+  late Animation<double> _opacityAnimation;
+
 
   void _toggleSettings() {
-    setState(() {
-      _showSettings = !_showSettings;
+    if (_showSettings) {
+      _animationController.reverse(); // to play the animation in reverse
+    } else {
+      _animationController.forward(); // to play the animation forward
+    }
+
+    // After the animation is complete, toggle _showSettings
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          _showSettings = true;
+        });
+      } else if (status == AnimationStatus.dismissed) {
+        setState(() {
+          _showSettings = false;
+        });
+      }
     });
   }
+
 
   Future<void> _fetchImageDimensions() async {
     final Image image = Image.asset('assets/uc_campus_map.png');
@@ -78,7 +98,21 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _fetchImageDimensions();
+
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+
+    // Set up the animations
+    _blurAnimation = Tween<double>(begin: 3.0, end: 10.0).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
+    );
+    _opacityAnimation = Tween<double>(begin: 0.2, end: 0.25).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -102,14 +136,23 @@ class _MyHomePageState extends State<MyHomePage> {
               size: Size(_imageWidth!, _imageHeight!),
             ),
           ),
-          BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-            child: Container(
-              color: Colors.red.withOpacity(0.2),
-            ),
+          AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return BackdropFilter(
+                filter: ui.ImageFilter.blur(
+                  sigmaX: _blurAnimation.value,
+                  sigmaY: _blurAnimation.value,
+                ),
+                child: Container(
+                  color: Colors.red.withOpacity(_opacityAnimation.value),
+                ),
+              );
+            },
           ),
+
           if (_showSettings)
-            SettingsWidget(toggleSettings: _toggleSettings) // Pass the _toggleSettings function
+            SettingsWidget() // Pass the _toggleSettings function
           else
             Positioned(
               left: 10,  // Adjust this value for desired left offset
