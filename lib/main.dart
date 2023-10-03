@@ -50,7 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _imageWidth = imageInfo.image.width.toDouble();
       _imageHeight = imageInfo.image.height.toDouble();
-      _minScale = MediaQuery.of(context).size.height / _imageHeight!; // Calculate minimum scale
+      _minScale = MediaQuery
+          .of(context)
+          .size
+          .height / _imageHeight!; // Calculate minimum scale
       _scale = _minScale!; // Set the initial scale to the minimum scale
     });
   }
@@ -74,16 +77,32 @@ class _MyHomePageState extends State<MyHomePage> {
             scrollDirection: Axis.horizontal,
             child: Container(
               width: _imageWidth! * _scale,
-              height: _imageHeight! * _scale,
-              child: ColorFiltered(
-                colorFilter: const ColorFilter.mode(
-                  Colors.grey,
-                  BlendMode.saturation,
-                ),
-                child: Image.asset(
-                  'assets/uc_campus_map.png',
-                  fit: BoxFit.fill,
-                ),
+              height: (_imageHeight! - 100) * _scale,
+              // Adjust height based on the clipped portion
+              child: Stack(
+                children: [
+                  ClipRect(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      heightFactor: (_imageHeight! - 100) / _imageHeight!,
+                      // Calculate the height factor based on the clipped portion
+                      child: ColorFiltered(
+                        colorFilter: const ColorFilter.mode(
+                          Colors.grey,
+                          BlendMode.saturation,
+                        ),
+                        child: Image.asset(
+                          'assets/uc_campus_map.png',
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.red.withOpacity(
+                        0.5), // This creates a semi-opaque red overlay
+                  ),
+                ],
               ),
             ),
           ),
