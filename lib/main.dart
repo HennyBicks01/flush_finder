@@ -83,14 +83,14 @@ class _MyHomePageState extends State<MyHomePage> {
             initialScale: _minScale!,
             basePosition: Alignment.topCenter,
             childSize: Size(_imageWidth!, _imageHeight!),
+            minScale: _minScale!,
+            maxScale: 4.0,
+            backgroundDecoration: const BoxDecoration(color: Colors.transparent),
+            heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
             child: CustomPaint(
               painter: FilteredImagePainter(_image!, _scale),
               size: Size(_imageWidth!, _imageHeight!),
             ),
-            minScale: _minScale!,
-            maxScale: 4.0,
-            backgroundDecoration: BoxDecoration(color: Colors.transparent),
-            heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
           ),
           BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
             left: 10,  // Adjust this value for desired left offset
             top: 50,   // Adjust this value to lower or raise the button
             child: IconButton(
-              icon: Icon(Icons.menu, color: Colors.white),
+              icon: const Icon(Icons.menu, color: Colors.white),
               onPressed: () {
                 // Handle menu button press
               },
@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
             right: 10,  // Adjust this value for desired right offset
             top: 50,   // Adjust this value to lower or raise the button
             child: IconButton(
-              icon: Icon(Icons.settings, color: Colors.white),
+              icon: const Icon(Icons.settings, color: Colors.white),
               onPressed: () {
                 // Handle settings button press
               },
