@@ -12,35 +12,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _scale = 2.5; // Increased initial zoom
-  double _xOffset = 0.0; // Adjust these values for initial position
+  double _scale = 2.5;
+  double _xOffset = 0.0;
   double _yOffset = 0.0;
 
-  void _zoomToMarker() {
-    setState(() {
-      _scale = 2.0;
-      _xOffset = -100;
-      _yOffset = -150;
-    });
-  }
+  final double imageWidth = 1053.0;  // Original image width
+  final double imageHeight = 951.0;  // Original image height
 
   void _onPanUpdate(DragUpdateDetails details) {
     setState(() {
@@ -48,10 +40,12 @@ class _MyHomePageState extends State<MyHomePage> {
       _yOffset += details.delta.dy;
 
       var screenSize = MediaQuery.of(context).size;
+      var scaledImageWidth = imageWidth * _scale;
+      var scaledImageHeight = imageHeight * _scale;
 
       // Calculate the boundary offsets
-      double maxXOffset = (screenSize.width / 2) * (_scale - 1);
-      double maxYOffset = (screenSize.height / 2) * (_scale - 1);
+      double maxXOffset = (scaledImageWidth - screenSize.width) / 2;
+      double maxYOffset = (scaledImageHeight - screenSize.height) / 2;
 
       // Clamp the offsets to ensure the image boundaries aren't crossed
       _xOffset = _xOffset.clamp(-maxXOffset, maxXOffset);
@@ -62,13 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
       body: GestureDetector(
-        onDoubleTap: _zoomToMarker,
         onPanUpdate: _onPanUpdate,
         child: Stack(
           children: [
@@ -76,9 +64,15 @@ class _MyHomePageState extends State<MyHomePage> {
               offset: Offset(_xOffset, _yOffset),
               child: Transform.scale(
                 scale: _scale,
-                child: Image.asset(
-                  'assets/uc_campus_map.png',
-                  fit: BoxFit.cover,
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Colors.grey,
+                    BlendMode.saturation,
+                  ),
+                  child: Image.asset(
+                    'assets/uc_campus_map.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -89,11 +83,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _zoomToMarker,
-        tooltip: 'Zoom to Marker',
-        child: const Icon(Icons.zoom_in),
       ),
     );
   }
