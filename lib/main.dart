@@ -186,6 +186,39 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               onPressed: _toggleSettings, // Toggle settings without navigation
             ),
           ),
+
+          // Only render the column with buttons when _showSettings is false
+          if (!_showSettings)
+            Align(
+              alignment: Alignment.center,
+              child: FractionallySizedBox(
+                widthFactor: 0.7,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle button press for Button 1
+                      },
+                      child: Text("Button 1"),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(double.infinity, 50),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle button press for Button 2
+                      },
+                      child: Text("Button 2"),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(double.infinity, 50),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
