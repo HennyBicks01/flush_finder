@@ -39,10 +39,14 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   ui.Image? _image; // To hold the raw image data
 
   bool _showSettings = false;
+
+  //animations
   late AnimationController _animationController;
   late Animation<double> _blurAnimation;
   late Animation<double> _opacityAnimation;
-  late Animation<double> _settingsFadeAnimation;
+  late Animation<Offset> _settingsSlideAnimation;
+  late Animation<Offset> _buttonSlideAnimation;
+
 
 
   void _toggleSettings() {
@@ -107,9 +111,14 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     _fetchImageDimensions();
 
     _animationController = AnimationController(
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 500 ),
       vsync: this,
     );
+
+    _settingsSlideAnimation = Tween<Offset>(
+      begin: const Offset(1.0, 0.0), // Starts off the screen (to the right)
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
 
     // Set up the animations
     _blurAnimation = Tween<double>(begin: 3.0, end: 10.0).animate(
@@ -118,9 +127,13 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     _opacityAnimation = Tween<double>(begin: 0.2, end: 0.25).animate(
         CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
     );
-    _settingsFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
-    );
+
+    _buttonSlideAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(-(10/7), 0.0),  // Increase this value
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+
+
   }
 
 
@@ -163,8 +176,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             },
           ),
           // Settings fade-in/fade-out.
-          FadeTransition(
-            opacity: _settingsFadeAnimation,
+          SlideTransition(
+            position: _settingsSlideAnimation,
             child: SettingsWidget(),
           ),
           Positioned(
@@ -186,44 +199,41 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               onPressed: _toggleSettings, // Toggle settings without navigation
             ),
           ),
-
-          // Only render the column with buttons when _showSettings is false
-          if (!_showSettings)
-          // Render the column with buttons when _showSettings is false
-            FadeTransition(
-              // Inverse the opacity for the opposite effect
-              opacity: _settingsFadeAnimation.drive(Tween<double>(begin: 1.0, end: 0.0)),
-              child: Align(
-                alignment: Alignment.center,
-                child: FractionallySizedBox(
-                  widthFactor: 0.7,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle button press for Button 1
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                        child: const Text("Button 1"),
+          Align(
+            alignment: Alignment.center,
+            child: SlideTransition(
+              position: _buttonSlideAnimation,
+              child: FractionallySizedBox(
+                widthFactor: 0.7,  // This ensures the width is 70% of the screen width
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,  // This ensures the column takes up only as much space as needed
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle button press for the first button
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),  // Makes button take up full width of its parent (70% screen width here)
                       ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle button press for Button 2
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                        child: const Text("Button 2"),
+                      child: const Text("Button 1"),
+                    ),
+                    const SizedBox(height: 20),  // Spacing between buttons
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle button press for the second button
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
                       ),
-                    ],
-                  ),
+                      child: const Text("Button 2"),
+                    ),
+                    // Add more buttons as needed
+                  ],
                 ),
               ),
             ),
+          ),
+
         ],
       ),
     );
