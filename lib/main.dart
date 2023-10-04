@@ -189,33 +189,38 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
           // Only render the column with buttons when _showSettings is false
           if (!_showSettings)
-            Align(
-              alignment: Alignment.center,
-              child: FractionallySizedBox(
-                widthFactor: 0.7,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle button press for Button 1
-                      },
-                      child: Text("Button 1"),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 50),
+          // Render the column with buttons when _showSettings is false
+            FadeTransition(
+              // Inverse the opacity for the opposite effect
+              opacity: _settingsFadeAnimation.drive(Tween<double>(begin: 1.0, end: 0.0)),
+              child: Align(
+                alignment: Alignment.center,
+                child: FractionallySizedBox(
+                  widthFactor: 0.7,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          // Handle button press for Button 1
+                        },
+                        child: Text("Button 1"),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(double.infinity, 50),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle button press for Button 2
-                      },
-                      child: Text("Button 2"),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 50),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Handle button press for Button 2
+                        },
+                        child: Text("Button 2"),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(double.infinity, 50),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
