@@ -36,12 +36,13 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   double? _minScale;
   double? _imageWidth;
   double? _imageHeight;
-  ui.Image? _image;  // To hold the raw image data
+  ui.Image? _image; // To hold the raw image data
 
   bool _showSettings = false;
   late AnimationController _animationController;
   late Animation<double> _blurAnimation;
   late Animation<double> _opacityAnimation;
+  late Animation<double> _settingsFadeAnimation;
 
 
   void _toggleSettings() {
@@ -86,8 +87,14 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       _imageHeight = _image!.height.toDouble();
 
       // Adjusted _minScale calculation
-      double widthRatio = MediaQuery.of(context).size.width / _imageWidth!;
-      double heightRatio = MediaQuery.of(context).size.height / _imageHeight!;
+      double widthRatio = MediaQuery
+          .of(context)
+          .size
+          .width / _imageWidth!;
+      double heightRatio = MediaQuery
+          .of(context)
+          .size
+          .height / _imageHeight!;
       _minScale = widthRatio > heightRatio ? widthRatio : heightRatio;
 
       _scale = _minScale!;
@@ -111,6 +118,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     _opacityAnimation = Tween<double>(begin: 0.2, end: 0.25).animate(
         CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
     );
+    _settingsFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
+    );
   }
 
 
@@ -129,13 +139,15 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             childSize: Size(_imageWidth!, _imageHeight!),
             minScale: _minScale!,
             maxScale: 4.0,
-            backgroundDecoration: const BoxDecoration(color: Colors.transparent),
+            backgroundDecoration: const BoxDecoration(
+                color: Colors.transparent),
             heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
             child: CustomPaint(
               painter: FilteredImagePainter(_image!, _scale),
               size: Size(_imageWidth!, _imageHeight!),
             ),
           ),
+          // Backdrop blur.
           AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
@@ -150,20 +162,21 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               );
             },
           ),
-
-          if (_showSettings)
-            SettingsWidget() // Pass the _toggleSettings function
-          else
-            Positioned(
-              left: 10,  // Adjust this value for desired left offset
-              top: 50,   // Adjust this value to lower or raise the button
-              child: IconButton(
-                icon: const Icon(Icons.menu, color: Colors.white),
-                onPressed: () {
-                  // Handle menu button press
-                },
-              ),
+          // Settings fade-in/fade-out.
+          FadeTransition(
+            opacity: _settingsFadeAnimation,
+            child: SettingsWidget(),
+          ),
+          Positioned(
+            left: 10, // Adjust this value for desired left offset
+            top: 50, // Adjust this value to lower or raise the button
+            child: IconButton(
+              icon: const Icon(Icons.menu, color: Colors.white),
+              onPressed: () {
+                // Handle menu button press
+              },
             ),
+          ),
 
           Positioned(
             right: 10,
