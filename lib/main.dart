@@ -204,20 +204,20 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                         onPressed: () {
                           // Handle button press for Button 1
                         },
-                        child: Text("Button 1"),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(double.infinity, 50),
+                          minimumSize: const Size(double.infinity, 50),
                         ),
+                        child: const Text("Button 1"),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
                           // Handle button press for Button 2
                         },
-                        child: Text("Button 2"),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(double.infinity, 50),
+                          minimumSize: const Size(double.infinity, 50),
                         ),
+                        child: const Text("Button 2"),
                       ),
                     ],
                   ),
