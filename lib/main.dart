@@ -46,6 +46,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   late Animation<double> _opacityAnimation;
   late Animation<Offset> _settingsSlideAnimation;
   late Animation<Offset> _buttonSlideAnimation;
+  late Animation<Offset> _imageSlideAnimation;
+
 
 
 
@@ -124,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     _blurAnimation = Tween<double>(begin: 3.0, end: 10.0).animate(
         CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
     );
+
     _opacityAnimation = Tween<double>(begin: 0.2, end: 0.25).animate(
         CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
     );
@@ -133,6 +136,10 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       end: const Offset(-(10/7), 0.0),  // Increase this value
     ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
 
+    _imageSlideAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(-0.3, 0.0),  // Moves the image slightly to the left
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
 
   }
 
@@ -146,7 +153,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     return Scaffold(
       body: Stack(
         children: [
-          PhotoView.customChild(
+        SlideTransition(
+        position: _imageSlideAnimation,
+        child: PhotoView.customChild(
             initialScale: _minScale!,
             basePosition: Alignment.topCenter,
             childSize: Size(_imageWidth!, _imageHeight!),
@@ -160,6 +169,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               size: Size(_imageWidth!, _imageHeight!),
             ),
           ),
+        ),
           // Backdrop blur.
           AnimatedBuilder(
             animation: _animationController,
