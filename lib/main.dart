@@ -37,7 +37,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   double? _imageWidth;
   double? _imageHeight;
   ui.Image? _image; // To hold the raw image data
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool _showSettings = false;
 
@@ -152,37 +151,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     }
 
     return Scaffold(
-      key: _scaffoldKey,
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Text('Menu'),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-              ),
-              ListTile(
-                title: Text('Item 1'),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text('Item 2'),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              // Add more ListTiles for other menu items
-            ],
-          ),
-        ),
       body: Stack(
         children: [
         SlideTransition(
@@ -223,15 +191,16 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             child: SettingsWidget(),
           ),
           Positioned(
-            left: 10,
-            top: 50,
+            left: 10, // Adjust this value for desired left offset
+            top: 50, // Adjust this value to lower or raise the button
             child: IconButton(
               icon: const Icon(Icons.menu, color: Colors.white),
               onPressed: () {
-                _scaffoldKey.currentState?.openDrawer();  // Open the drawer
+                // Handle menu button press
               },
             ),
           ),
+
           Positioned(
             right: 10,
             top: 50,
