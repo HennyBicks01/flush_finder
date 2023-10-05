@@ -39,6 +39,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   ui.Image? _image; // To hold the raw image data
 
   bool _showSettings = false;
+  bool _showMenu = false;  // to track the visibility of the menu
+
+
 
   //animations
   late AnimationController _animationController;
@@ -47,22 +50,25 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   late Animation<Offset> _settingsSlideAnimation;
   late Animation<Offset> _buttonSlideAnimation;
   late Animation<Offset> _imageSlideAnimation;
-
+  late Animation<Offset> _menuSlideAnimation;  // animation for the menu
 
 
 
   void _toggleSettings() {
     if (_showSettings) {
-      _animationController.reverse(); // to play the animation in reverse
+      _animationController.reverse();
+    } else if (_showMenu) {
+      _showMenu = false; // hide menu when showing settings
+      _animationController.reverse();
     } else {
-      _animationController.forward(); // to play the animation forward
+      _animationController.forward();
     }
 
-    // After the animation is complete, toggle _showSettings
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
           _showSettings = true;
+          _showMenu = false;
         });
       } else if (status == AnimationStatus.dismissed) {
         setState(() {
@@ -71,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       }
     });
   }
+
 
 
   Future<void> _fetchImageDimensions() async {
@@ -141,6 +148,11 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       end: const Offset(-0.3, 0.0),  // Moves the image slightly to the left
     ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
 
+    _menuSlideAnimation = Tween<Offset>(
+      begin: const Offset(-1.0, 0.0), // Starts off the screen (to the left)
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+
   }
 
 
@@ -190,13 +202,28 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             position: _settingsSlideAnimation,
             child: SettingsWidget(),
           ),
+          // Menu fade-in/fade-out.
+          SlideTransition(
+            position: _menuSlideAnimation,
+            child: MenuWidget(),  // Replace this with your actual menu widget
+          ),
+
           Positioned(
             left: 10, // Adjust this value for desired left offset
             top: 50, // Adjust this value to lower or raise the button
             child: IconButton(
               icon: const Icon(Icons.menu, color: Colors.white),
               onPressed: () {
-                // Handle menu button press
+                if (_showMenu) {
+                  _animationController.reverse();
+                } else {
+                  _showSettings = false;  // hide settings when showing menu
+                  _animationController.forward();
+                }
+
+                setState(() {
+                  _showMenu = !_showMenu;
+                });
               },
             ),
           ),
