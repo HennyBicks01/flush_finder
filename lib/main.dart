@@ -204,8 +204,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           ),
           // Menu fade-in/fade-out.
           SlideTransition(
-            position: _menuSlideAnimation,
-            child: MenuWidget(),  // Replace this with your actual menu widget
+            position: _menuSlideAnimation, // Replace this with your actual menu widget
           ),
 
           Positioned(
